@@ -3,6 +3,8 @@ from src.sharedMemory.InstructionMemory import *
 from src.CPU.Core import *
 from src.textAnalizer.Context import *
 
+import glob
+
 class Procesor:
     Data = DataMemory
     Instructions = InstructionMemory
@@ -21,7 +23,17 @@ class Procesor:
         pass
 
     def startProgram(self):
-        pass
+
+        file_list = glob.glob('../hilillos/' + '*.txt')
+        print(file_list)
+
+        for file in file_list:
+
+            data = open(file)
+
+            for line in data:
+                pass
+
 
     def initAvailableContexts(self): #Hay que hacer la inicialización
         pass

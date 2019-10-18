@@ -1,4 +1,5 @@
 from src.CPU.Procesor import *
 
 main = Procesor()
-Procesor.startProgram()
+procesor = Procesor()
+procesor.startProgram()
