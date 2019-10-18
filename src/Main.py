@@ -1,6 +1,4 @@
-from src.parentClases.Bus import *
-from src.textAnalizer.Context import *
+from src.CPU.Procesor import *
 
-contexto = Context()
-contexto.printContext()
-
+main = Procesor()
+Procesor.startProgram()
