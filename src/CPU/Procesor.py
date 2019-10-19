@@ -14,7 +14,7 @@ class Procesor:
     nextContext = 0 #El siguiente contexto del array
     numBlocks = 0 #Cambiar
     blockSize = 0 #Cmabiar
-    contextList = [Context] * 5 #Resultado de aquel proc de analizer
+    contextList = []
     availableContext = [True] * 5 #Se cambian según los contextos que yo entregue
     totalHilillos = 0
     doneHilillos = 0
@@ -25,14 +25,11 @@ class Procesor:
     def startProgram(self):
 
         file_list = glob.glob('../hilillos/' + '*.txt')
-        print(file_list)
+        totalHilillos = len(file_list)
 
-        for file in file_list:
 
-            data = open(file)
 
-            for line in data:
-                pass
+
 
 
     def initAvailableContexts(self): #Hay que hacer la inicialización

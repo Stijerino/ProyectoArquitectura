@@ -1,7 +1,19 @@
 from src.textAnalizer.Context import *
 
 class TextProcessor :
-    def processFile(self, fileName, sharedData,sharedInstructions):
-        context = Context()
-        contextsList = [context] * 10 #así se simula que es una lista de contextos
+    def processFile(self, fileNameList, sharedData,sharedInstructions):
+
+        contextsList = []
+
+        for fileName in fileNameList:
+            context = Context()
+
+            data = open(fileName)
+
+            for line in data:
+                #Coloca las instrucciones en la  memoria de instrucciones
+                pass
+
+            contextsList.append(context)
+
         return contextsList
