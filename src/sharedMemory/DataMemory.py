@@ -1,4 +1,7 @@
 from src.parentClases.SharedComponent import *
 
 class DataMemory (SharedComponent):
-    pass
+
+    memory = [i for i in range(0, 380)]
+    blockSize = 4
+    bus = True

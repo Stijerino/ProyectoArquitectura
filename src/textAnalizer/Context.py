@@ -3,6 +3,9 @@ class Context:
     instructionIndex = 0 #entero
     registers = [0] * 32 #array de enteros, por el momento hay 32 registros
 
+    def setInstructionIndex(self,index):
+        self.instructionIndex = index
+
     def getRegister(self):
         return "algún registro que se pidió"
 
