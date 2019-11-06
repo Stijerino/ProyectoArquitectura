@@ -6,6 +6,9 @@ class Context:
     def setInstructionIndex(self,index):
         self.instructionIndex = index
 
+    def getInstructionIndex(self):
+        return self.instructionIndex
+
     def getRegister(self):
         return "algún registro que se pidió"
 

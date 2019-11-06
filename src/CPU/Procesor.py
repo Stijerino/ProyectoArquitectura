@@ -5,13 +5,14 @@ from src.textAnalizer.Context import *
 from src.textAnalizer.TextProcessor import *
 
 import glob
+import threading
 
 class Procesor:
     dataMemory = DataMemory
     instructionsMemory = InstructionMemory
-    Clock = 0
-    Core0 = Core
-    Core1 = Core
+    clock = 0
+    core0 = Core
+    core1 = Core
     nextContext = 0 #El siguiente contexto del array
     numBlocks = 0 #Cambiar
     blockSize = 0 #Cmabiar
@@ -19,6 +20,9 @@ class Procesor:
     availableContext = [True] * 5 #Se cambian según los contextos que yo entregue
     totalHilillos = 0
     doneHilillos = 0
+
+    dataBus = 0
+    instructionBus = 0
 
     def initMemory(self):
         #Inicializa las memorias
@@ -36,6 +40,7 @@ class Procesor:
         textProcessor = TextProcessor()
         self.contextList = textProcessor.processFile(file_list,self.dataMemory,self.instructionsMemory)
 
+        self.initAvailableContexts()
 
         #todo: imprimir solo cuando se hayan acabado los hililos
         self.printResults()
@@ -45,11 +50,58 @@ class Procesor:
 
     def initAvailableContexts(self): #Hay que hacer la inicialización
         '''
+        Instancia los hilos, las caches, buses y realiza la asignación de hilillos.
         '''
+
+        self.dataBus = SharedComponent()
+        self.instructionBus = SharedComponent()
+
+        #todo Inicializar caches
+
+        self.core0 = Core(self.dataBus,self.instructionBus)
+        #self.core1 = Core(self.dataBus, self.instructionBus)
+
+        #Indican si los nucleos estan disponibles
+        availableCore0 = True
+        availableCore1 = True
+
+        #Agarra los contextos y los asigna a los respectivos hilillos
+        lastContextIndex = 0
+
+        while lastContextIndex < self.totalHilillos:
+            if availableCore0 == True:
+                availableCore0 = False
+
+                #Crea un nuevo hilo. Solo hasta que el hilo termine se desocupa el core
+                #hilo0 = threading.Thread(target=self.core0.startContext, args=(self.contextList[lastContextIndex]))
+                hilo0 = threading.Thread(target=self.assignThread(self.core0,self.contextList[lastContextIndex]))
+                hilo0.start()
+
+
+
+                lastContextIndex+=1
+
+            else:
+                if availableCore1 == True:
+                    #lastContextIndex +=1
+                    availableCore1 = False
+                else:
+                    #todo: Debe aplicar algun mecanismo de sincronización para esperar a que alguno de los 2 hilos
+                    pass
+
+
+
         pass
 
     def assignThread(self, pCore, pContext): #Al pCore le paso el pContext
-        pass
+        '''
+        Funcion intermediaria. Corre el hilo con el contexto actuak
+        :param pCore:
+        :param pContext:
+
+        '''
+
+        pCore.startContext(pContext)
 
     def getNextHilillo(self):
         pass
