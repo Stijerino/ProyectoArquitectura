@@ -9,6 +9,7 @@ from src.buses.DataBus import  *
 import glob
 import threading
 
+
 class Procesor:
     dataMemory = DataMemory
     instructionsMemory = InstructionMemory
@@ -61,9 +62,9 @@ class Procesor:
         #todo Inicializar caches
 
         self.core0 = Core(self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory)
-        #self.core1 = Core(self.dataBus, self.instructionBus)
+        self.core1 = Core(self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory)
 
-        #Ind2ican si los nucleos estan disponibles
+        #Indican si los nucleos estan disponibles
         availableCore0 = True
         availableCore1 = True
 
@@ -75,21 +76,39 @@ class Procesor:
                 availableCore0 = False
 
                 #Crea un nuevo hilo. Solo hasta que el hilo termine se desocupa el core
-                #hilo0 = threading.Thread(target=self.core0.startContext, args=(self.contextList[lastContextIndex]))
-
                 if(lastContextIndex < self.totalHilillos):
-                    hilo0 = threading.Thread(target=self.assignThread(self.core0,self.contextList[lastContextIndex]))
-                    ++lastContextIndex
-                    hilo0.start()
+                    print("***Core 0 ha empezado a correr el hilo: "  + str(lastContextIndex))
+                    self.contextList[lastContextIndex].setCore(0)
+                    lastContextIndex += 1
+                    hilo0 = threading.Thread(target=self.assignThread(self.core0,self.contextList[lastContextIndex-1]))
+                    hilo0.run()
 
-                lastContextIndex+=1
+                    print("***Core0 ha terminado")
+
+                #availableCore0 = True
+
 
             else:
                 if availableCore1 == True:
-                    #lastContextIndex +=1
                     availableCore1 = False
+
+                    # Crea un nuevo hilo. Solo hasta que el hilo termine se desocupa el core
+                    if (lastContextIndex < self.totalHilillos):
+                        print("***Core 1 ha empezado a correr el hilo: " + str(lastContextIndex))
+                        self.contextList[lastContextIndex].setCore(1)
+
+                        hilo1 = threading.Thread(target=self.assignThread(self.core1, self.contextList[lastContextIndex]))
+                        hilo1.run()
+
+                        lastContextIndex += 1
+
+
+                        print("***Core1 ha terminado")
+
+                    #availableCore1 = True
+
+
                 else:
-                    #todo: Debe aplicar algun mecanismo de sincronización para esperar a que alguno de los 2 hilos
                     pass
 
 

@@ -2,6 +2,11 @@ class Context:
     dataIndex = 0 #entero
     instructionIndex = 0  #entero
     registers = [0] * 32  #array de enteros, por el momento hay 32 registros
+    core = -1
+
+    def setCore(self,core):
+        self.core = core
+
 
     def setInstructionIndex(self,index):
         self.instructionIndex = index
@@ -20,4 +25,6 @@ class Context:
         print("Instruction Index : %d" % (self.instructionIndex));
         for r in range(len(self.registers)):
             print("En el registro %d encontramos el valor %d" % ( r, self.registers[r]))
+
+        print("Ejecutado por el core: " + str(self.core))
 

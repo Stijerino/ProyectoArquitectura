@@ -65,3 +65,4 @@ class InstructionManager:
         registroFuente2 = instruccionActual[3]
         multiplicacion = context.getRegister(registroFuente1) * context.getRegister(registroFuente2)
         context.setRegister(registroDestino, multiplicacion)
+

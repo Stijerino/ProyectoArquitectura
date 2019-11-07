@@ -2,6 +2,8 @@ from src.caches.DataCache import *
 from src.caches.InstructionCache import *
 from src.CPU.InstructionManager import  *
 
+import time
+
 class Core:
     PC = 0
     IR = 0
@@ -33,21 +35,21 @@ class Core:
         :param context: El contexto del hilillo a correr
         :return: True, para indicar que termino.
         '''
-
         self.context = context
+
         self.PC = context.getInstructionIndex()
         self.instructionManager = InstructionManager()
-
         self.run()
 
-        return True
 
+
+
+        return True
 
     def run(self):
         '''
         El trabajo realizado por el core durante el ciclo de reloj actual
         '''
-
 
         self.fin = False
 
@@ -74,10 +76,6 @@ class Core:
                 palabraBloque = 2
             else:
                 palabraBloque = 3
-
-            #print(self.instructionsCache.memoryMapping)
-
-            #todo inicialiar caches
 
             #Preguntamos si en la posicion adecuada de la caché está el bloque y si además es válido
             if self.instructionsCache.memoryMapping[posicionCache] == numeroBloque and self.instructionsCache.available[posicionCache] == True:
@@ -118,7 +116,7 @@ class Core:
                     #self.dataCache.available[posicionCache] = True
 
 
-                    print(self.instructionsCache.memory)
+                    #print(self.instructionsCache.memory)
 
                     #Sumar los clocks necesarios
                     self.clock += 10
@@ -127,7 +125,7 @@ class Core:
 
                     #En cual palabra del bloque está la instruccion? => PC % 4 ?
                     #Sobre cual bloque estamos trabajando => posicionCache
-                    #todo: No trarse todo el bloque a fuerza!!!!
+
                     self.ejecutarInstruccion(palabraBloque, posicionCache, self.instructionsCache.memory[posicionCache*16 : posicionCache*16 + 4])
 
                     #Libera el bus de instrucciones
