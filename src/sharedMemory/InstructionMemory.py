@@ -3,9 +3,13 @@ import math
 
 class InstructionMemory(SharedComponent):
 
-    memory = [0 for i in range(0,636)]
+    memory = [0 for i in range(384,1024)]
     blockSize = 4
     reservedBus = False
+
+    def __init__(self):
+        for i in range(384,1024):
+            self.memory[i-384] = i
 
     def getBus(self):
 
@@ -59,12 +63,10 @@ class InstructionMemory(SharedComponent):
         print("Estado de la memoria de instrucciones: ")
 
         for i in range(0,len(self.memory)):
-            print(self.memory[i],end=(' ' * (6 - len(str(self.memory[i]))))) #todo: mejorar formato de impresion
+            print(self.memory[i], end=(' ' * (6 - len(str(self.memory[i]))))) #todo: mejorar formato de impresion
 
             if i %  30 == 29:
                 print()
-
-
         print()
 
 

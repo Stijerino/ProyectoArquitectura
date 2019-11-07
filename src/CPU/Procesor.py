@@ -3,6 +3,8 @@ from src.sharedMemory.InstructionMemory import *
 from src.CPU.Core import *
 from src.textAnalizer.Context import *
 from src.textAnalizer.TextProcessor import *
+from src.buses.InstructionBus import *
+from src.buses.DataBus import  *
 
 import glob
 import threading
@@ -53,15 +55,15 @@ class Procesor:
         Instancia los hilos, las caches, buses y realiza la asignación de hilillos.
         '''
 
-        self.dataBus = SharedComponent()
-        self.instructionBus = SharedComponent()
+        self.dataBus = DataBus()
+        self.instructionBus = InstructionBus()
 
         #todo Inicializar caches
 
-        self.core0 = Core(self.dataBus,self.instructionBus)
+        self.core0 = Core(self.dataBus,self.instructionBus, self.dataMemory, self.instructionBus)
         #self.core1 = Core(self.dataBus, self.instructionBus)
 
-        #Indican si los nucleos estan disponibles
+        #Ind2ican si los nucleos estan disponibles
         availableCore0 = True
         availableCore1 = True
 
@@ -74,10 +76,11 @@ class Procesor:
 
                 #Crea un nuevo hilo. Solo hasta que el hilo termine se desocupa el core
                 #hilo0 = threading.Thread(target=self.core0.startContext, args=(self.contextList[lastContextIndex]))
-                hilo0 = threading.Thread(target=self.assignThread(self.core0,self.contextList[lastContextIndex]))
-                hilo0.start()
 
-
+                if(lastContextIndex < self.totalHilillos):
+                    hilo0 = threading.Thread(target=self.assignThread(self.core0,self.contextList[lastContextIndex]))
+                    ++lastContextIndex
+                    hilo0.start()
 
                 lastContextIndex+=1
 
@@ -100,7 +103,6 @@ class Procesor:
         :param pContext:
 
         '''
-
         pCore.startContext(pContext)
 
     def getNextHilillo(self):
@@ -112,6 +114,7 @@ class Procesor:
         Imprime la lista de contextos y el estado de la memoria
         :return:
         '''
+        self.dataMemory.printMemory()
         self.instructionsMemory.printMemory()
         print("Lista de contextos:")
         for context in self.contextList:
