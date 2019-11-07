@@ -60,7 +60,7 @@ class Procesor:
 
         #todo Inicializar caches
 
-        self.core0 = Core(self.dataBus,self.instructionBus, self.dataMemory, self.instructionBus)
+        self.core0 = Core(self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory)
         #self.core1 = Core(self.dataBus, self.instructionBus)
 
         #Ind2ican si los nucleos estan disponibles

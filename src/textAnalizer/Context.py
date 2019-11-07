@@ -9,11 +9,11 @@ class Context:
     def getInstructionIndex(self):
         return self.instructionIndex
 
-    def getRegister(self):
-        return "algún registro que se pidió"
+    def getRegister(self,register):
+        return int(self.registers[register])
 
-    def setRegister(self):
-        print("He seteado el registro R con el valor #")
+    def setRegister(self, register, value):
+        self.registers[register] = value
 
     def printContext(self):
         print("Data Index : %d" % (self.dataIndex))
