@@ -25,6 +25,10 @@ class Procesor:
     totalHilillos = 0
     doneHilillos = 0
 
+    # Indican si los nucleos estan disponibles
+    availableCore0 = True
+    availableCore1 = True
+
     dataBus = 0
     instructionBus = 0
 
@@ -63,18 +67,20 @@ class Procesor:
         self.core0 = Core(self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory)
         self.core1 = Core(self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory)
 
-        #Indican si los nucleos estan disponibles
-        availableCore0 = True
-        availableCore1 = True
+
 
         hilos = []
 
         #Agarra los contextos y los asigna a los respectivos hilillos
         lastContextIndex = 0
 
+
+
         while lastContextIndex < self.totalHilillos:
-            if availableCore0 == True:
-                availableCore0 = False
+
+
+            if self.availableCore0 == True:
+                self.availableCore0 = False
 
                 #Crea un nuevo hilo. Solo hasta que el hilo termine se desocupa el core
                 if(lastContextIndex < self.totalHilillos):
@@ -88,8 +94,8 @@ class Procesor:
 
                 #availableCore0 = True
 
-            if availableCore1 == True:
-                availableCore1 = False
+            if self.availableCore1 == True:
+                self.availableCore1 = False
 
                 # Crea un nuevo hilo. Solo hasta que el hilo termine se desocupa el core
                 if (lastContextIndex < self.totalHilillos):
@@ -97,7 +103,6 @@ class Procesor:
                     self.contextList[lastContextIndex].setCore(1)
 
                     hilo1 = threading.Thread(target=self.assignThread2,args=(self.core1, self.contextList[lastContextIndex]))
-                    #hilo1.start()
                     hilos.append(hilo1)
 
                     lastContextIndex += 1
@@ -106,12 +111,11 @@ class Procesor:
                     #print("***Core1 ha terminado")
 
                 #availableCore1 = True
-            for h in hilos:
-                if not h.is_alive():
-                    h.start()
-                    pass
-            h = []
 
+
+            for h in hilos:
+                h.start()
+            hilos = []
 
         pass
 
@@ -123,6 +127,8 @@ class Procesor:
 
         '''
         pCore.startContext(pContext)
+        self.availableCore0 = True
+        return
 
     def assignThread2(self, pCore, pContext):  # Al pCore le paso el pContext
         '''
@@ -132,6 +138,8 @@ class Procesor:
 
         '''
         pCore.startContext(pContext)
+        self.availableCore1 = True
+        return
 
     def getNextHilillo(self):
         pass
