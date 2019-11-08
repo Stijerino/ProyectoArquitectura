@@ -44,6 +44,7 @@ class Core:
 
 
 
+
         return True
 
     def run(self):
@@ -141,13 +142,14 @@ class Core:
                 # dentro de este método grande, un while "lo que devuelve la instruccion" no sea falso/verdadero, depende de lo que queramos poner
 
                 # traiga la instrucción
-                print("Corriendo en el ciclo de reloj: " + str(self.clock))
+                #print("Corriendo en el ciclo de reloj: " + str(self.clock))
 
 
     #Método que se utiliza para ejecutar cada instrucción individual
     #Tiene el switch grande con las instrucciones
     def ejecutarInstruccion(self, palabraBloque, bloqueCache, instruccionActual):
         '''
+
 
         :param palabraBloque: todo volarse esto
         :param bloqueCache:  todo volarse esto x2

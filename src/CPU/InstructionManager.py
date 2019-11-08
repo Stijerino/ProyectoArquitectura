@@ -29,6 +29,8 @@ class InstructionManager:
         suma = context.getRegister(registroFuente1) + context.getRegister(registroFuente2)
         context.setRegister(registroDestino, suma)
 
+
+
     def sub(self,instruccionActual,context):
         '''
         Procesa una instrucción sub

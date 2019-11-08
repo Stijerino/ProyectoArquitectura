@@ -13,6 +13,7 @@ class TextProcessor :
 
         contextsList = []
         instruction_counter = 0
+        file_counter = 0
 
         for fileName in fileNameList:
             context = Context() #instancia un nuevo contexto
@@ -30,6 +31,8 @@ class TextProcessor :
                 sharedInstructions.writeInstruction(instruction,instruction_counter * 4) # 4 = tamaño de la instrucción
                 instruction_counter += 1
 
+            context.setId(file_counter)
             contextsList.append(context)
+            file_counter+=1
 
         return contextsList

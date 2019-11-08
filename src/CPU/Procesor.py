@@ -8,6 +8,7 @@ from src.buses.DataBus import  *
 
 import glob
 import threading
+import time
 
 
 class Procesor:
@@ -49,8 +50,6 @@ class Procesor:
         self.printResults()
 
 
-
-
     def initAvailableContexts(self): #Hay que hacer la inicialización
         '''
         Instancia los hilos, las caches, buses y realiza la asignación de hilillos.
@@ -68,6 +67,8 @@ class Procesor:
         availableCore0 = True
         availableCore1 = True
 
+        hilos = []
+
         #Agarra los contextos y los asigna a los respectivos hilillos
         lastContextIndex = 0
 
@@ -79,38 +80,37 @@ class Procesor:
                 if(lastContextIndex < self.totalHilillos):
                     print("***Core 0 ha empezado a correr el hilo: "  + str(lastContextIndex))
                     self.contextList[lastContextIndex].setCore(0)
+                    hilo0 = threading.Thread(target=self.assignThread,args=(self.core0,self.contextList[lastContextIndex]))
                     lastContextIndex += 1
-                    hilo0 = threading.Thread(target=self.assignThread(self.core0,self.contextList[lastContextIndex-1]))
-                    hilo0.run()
+                    hilos.append(hilo0)
 
-                    print("***Core0 ha terminado")
+                    #print("***Core0 ha terminado")
 
                 #availableCore0 = True
 
+            if availableCore1 == True:
+                availableCore1 = False
 
-            else:
-                if availableCore1 == True:
-                    availableCore1 = False
+                # Crea un nuevo hilo. Solo hasta que el hilo termine se desocupa el core
+                if (lastContextIndex < self.totalHilillos):
+                    print("***Core 1 ha empezado a correr el hilo: " + str(lastContextIndex))
+                    self.contextList[lastContextIndex].setCore(1)
 
-                    # Crea un nuevo hilo. Solo hasta que el hilo termine se desocupa el core
-                    if (lastContextIndex < self.totalHilillos):
-                        print("***Core 1 ha empezado a correr el hilo: " + str(lastContextIndex))
-                        self.contextList[lastContextIndex].setCore(1)
+                    hilo1 = threading.Thread(target=self.assignThread2,args=(self.core1, self.contextList[lastContextIndex]))
+                    #hilo1.start()
+                    hilos.append(hilo1)
 
-                        hilo1 = threading.Thread(target=self.assignThread(self.core1, self.contextList[lastContextIndex]))
-                        hilo1.run()
-
-                        lastContextIndex += 1
-
-
-                        print("***Core1 ha terminado")
-
-                    #availableCore1 = True
+                    lastContextIndex += 1
 
 
-                else:
+                    #print("***Core1 ha terminado")
+
+                #availableCore1 = True
+            for h in hilos:
+                if not h.is_alive():
+                    h.start()
                     pass
-
+            h = []
 
 
         pass
@@ -118,6 +118,15 @@ class Procesor:
     def assignThread(self, pCore, pContext): #Al pCore le paso el pContext
         '''
         Funcion intermediaria. Corre el hilo con el contexto actuak
+        :param pCore:
+        :param pContext:
+
+        '''
+        pCore.startContext(pContext)
+
+    def assignThread2(self, pCore, pContext):  # Al pCore le paso el pContext
+        '''
+        Funcion intermediaria. Corre el hilo con el contexto actual
         :param pCore:
         :param pContext:
 

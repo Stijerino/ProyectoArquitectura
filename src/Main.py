@@ -1,7 +1,8 @@
 from src.CPU.Procesor import *
 
-main = Procesor()
-procesor = Procesor()
-procesor.startProgram()
 
+if __name__ == '__main__':
+    main = Procesor()
+    procesor = Procesor()
+    procesor.startProgram()
 
