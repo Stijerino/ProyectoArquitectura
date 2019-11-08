@@ -68,3 +68,49 @@ class InstructionManager:
         multiplicacion = context.getRegister(registroFuente1) * context.getRegister(registroFuente2)
         context.setRegister(registroDestino, multiplicacion)
 
+    def beq(self,instruccionActual,context,PC,direccionEtiqueta):
+        '''
+        Procesa una instrucción beq
+        :param instruccionActual:  op,x1,x2,etiq tal que cambia PC si x1 = x2
+        :param context: el contexto del core que contiene los valores en los registros
+        :param PC: El valor viejo del PC
+        :param direccionEtiqueta: La direccion a la que debe saltar. Ya debe estar calculada por el llamador
+
+        :return El nuevo valor del contador del programa
+        '''
+
+        registro1 = instruccionActual[1]
+        registro2 = instruccionActual[2]
+
+        nuevoPC = PC
+
+        if context.getRegister(registro1) == context.getRegister(registro2):
+            nuevoPC = PC + direccionEtiqueta * 4
+
+        return nuevoPC
+
+
+    def bne(self,instruccionActual,context,PC,direccionEtiqueta):
+        '''
+        Procesa una instrucción bne
+        :param instruccionActual: de la forma op,x1,x2,etiq tal que cambia PC si x1 != x2
+        :param context: el contexto del core que contiene los valores en los registros
+        :param PC: El valor viejo del PC
+        :param direccionEtiqueta: La direccion a la que debe saltar. Ya debe estar calculada por el llamador
+
+        :return El nuevo valor del contador del programa
+        '''
+
+        registro1 = instruccionActual[1]
+        registro2 = instruccionActual[2]
+
+        nuevoPC = PC
+
+        if context.getRegister(registro1) != context.getRegister(registro2):
+            nuevoPC = PC + direccionEtiqueta * 4
+
+        return nuevoPC
+
+
+
+

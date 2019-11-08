@@ -141,10 +141,6 @@ class Procesor:
         self.availableCore1 = True
         return
 
-    def getNextHilillo(self):
-        pass
-
-
     def printResults(self):
         '''
         Imprime la lista de contextos y el estado de la memoria
