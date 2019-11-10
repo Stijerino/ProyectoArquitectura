@@ -1,10 +1,12 @@
 from src.caches.DataCache import *
 from src.caches.InstructionCache import *
 from src.CPU.InstructionManager import  *
+from src.textAnalizer.OutputPrinter import *
 
 import time
 
 class Core:
+    ID = -1
     PC = 0
     IR = 0
     busy = False
@@ -18,15 +20,19 @@ class Core:
     dataCache = 0
     instructionManager = 0
     fin = False
+    output = 0
 
     #Inicializamos las referencias de memoria y tambien las caches
-    def __init__(self, DataBus, InstructionBus, DataMem, InstructionMem):
+    def __init__(self, ID, DataBus, InstructionBus, DataMem, InstructionMem, output):
+        self.ID = ID
         self.dataBusReference = DataBus
         self.instructionBusReference = InstructionBus
         self.dataMemory = DataMem
         self.instructionMemory = InstructionMem
         self.instructionsCache = InstructionCache()
         self.dataCache = DataCache()
+        self.output = output
+        self.instructionManager = InstructionManager()
 
 
     def startContext(self,context):
@@ -36,14 +42,13 @@ class Core:
         :return: True, para indicar que termino.
         '''
         self.context = context
-
         self.PC = context.getInstructionIndex()
-        self.instructionManager = InstructionManager()
+
+        self.output.log("El core " + str(self.ID) + " ha empezado el hilillo " + str(self.context.id))
         self.run()
-
-
-
-
+        time.sleep(1) #todo Explicarle a la profesora que si no se espera 1 segundo entonces el hilo termina tan rapido
+                      #todo que se ejecuta de forma secuencial
+        self.output.log("El core " + str(self.ID) + " ha terminado el hilillo " + str(self.context.id))
 
         return True
 
@@ -134,7 +139,7 @@ class Core:
 
                 else:
                     #Esperar un ciclo y volver a solicitar el bus de nuevo
-                    print("No se pudo obtener el bus")
+                    self.output.log("El hilo " + str(self.ID) + " no ha podido obtener el bus de instrucciones.")
                     pass
 
                 #este proceso de buscar instruccion, traerla a cache y luego ejecutarla debería de hacer siempre y cuando no tengamos
@@ -142,7 +147,7 @@ class Core:
                 # dentro de este método grande, un while "lo que devuelve la instruccion" no sea falso/verdadero, depende de lo que queramos poner
 
                 # traiga la instrucción
-                #print("Corriendo en el ciclo de reloj: " + str(self.clock))
+                self.output.debug("El core " + str(self.ID) + " se encuentra en el ciclo " +  str(self.clock))
 
 
     #Método que se utiliza para ejecutar cada instrucción individual

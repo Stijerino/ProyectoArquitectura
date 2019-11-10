@@ -5,10 +5,10 @@ from src.textAnalizer.Context import *
 from src.textAnalizer.TextProcessor import *
 from src.buses.InstructionBus import *
 from src.buses.DataBus import  *
+from src.textAnalizer.OutputPrinter import *
 
 import glob
 import threading
-import time
 
 
 class Procesor:
@@ -24,6 +24,8 @@ class Procesor:
     availableContext = [True] * 5 #Se cambian según los contextos que yo entregue
     totalHilillos = 0
     doneHilillos = 0
+    outputPrinter = 0
+    barrera = threading.Semaphore()
 
     # Indican si los nucleos estan disponibles
     availableCore0 = True
@@ -56,16 +58,18 @@ class Procesor:
 
     def initAvailableContexts(self): #Hay que hacer la inicialización
         '''
-        Instancia los hilos, las caches, buses y realiza la asignación de hilillos.
+        Instancia los hilos, las caches, buses, manejador de salida y realiza la asignación de hilillos.
         '''
 
         self.dataBus = DataBus()
         self.instructionBus = InstructionBus()
+        self.outputPrinter = OutputPrinter("salida.txt")
+        self.barrera = threading.Semaphore()
 
         #todo Inicializar caches
 
-        self.core0 = Core(self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory)
-        self.core1 = Core(self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory)
+        self.core0 = Core(0,self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory, self.outputPrinter)
+        self.core1 = Core(1,self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory, self.outputPrinter)
 
 
 
@@ -84,13 +88,12 @@ class Procesor:
 
                 #Crea un nuevo hilo. Solo hasta que el hilo termine se desocupa el core
                 if(lastContextIndex < self.totalHilillos):
-                    print("***Core 0 ha empezado a correr el hilo: "  + str(lastContextIndex))
+
                     self.contextList[lastContextIndex].setCore(0)
                     hilo0 = threading.Thread(target=self.assignThread,args=(self.core0,self.contextList[lastContextIndex]))
                     lastContextIndex += 1
                     hilos.append(hilo0)
 
-                    #print("***Core0 ha terminado")
 
                 #availableCore0 = True
 
@@ -99,16 +102,15 @@ class Procesor:
 
                 # Crea un nuevo hilo. Solo hasta que el hilo termine se desocupa el core
                 if (lastContextIndex < self.totalHilillos):
-                    print("***Core 1 ha empezado a correr el hilo: " + str(lastContextIndex))
                     self.contextList[lastContextIndex].setCore(1)
 
                     hilo1 = threading.Thread(target=self.assignThread2,args=(self.core1, self.contextList[lastContextIndex]))
                     hilos.append(hilo1)
 
+
+
                     lastContextIndex += 1
 
-
-                    #print("***Core1 ha terminado")
 
                 #availableCore1 = True
 
@@ -117,7 +119,10 @@ class Procesor:
                 h.start()
             hilos = []
 
-        pass
+        #No imprime los resultados hasta que todos los hilos hayan terminado
+        for i in range(0,self.totalHilillos):
+            self.barrera.acquire()
+
 
     def assignThread(self, pCore, pContext): #Al pCore le paso el pContext
         '''
@@ -128,6 +133,7 @@ class Procesor:
         '''
         pCore.startContext(pContext)
         self.availableCore0 = True
+        self.barrera.release()
         return
 
     def assignThread2(self, pCore, pContext):  # Al pCore le paso el pContext
@@ -139,6 +145,7 @@ class Procesor:
         '''
         pCore.startContext(pContext)
         self.availableCore1 = True
+        self.barrera.release()
         return
 
     def printResults(self):
