@@ -120,8 +120,10 @@ class Procesor:
             hilos = []
 
         #No imprime los resultados hasta que todos los hilos hayan terminado
-        for i in range(0,self.totalHilillos):
+        for i in range(0,self.totalHilillos+1):
             self.barrera.acquire()
+
+
 
 
     def assignThread(self, pCore, pContext): #Al pCore le paso el pContext
