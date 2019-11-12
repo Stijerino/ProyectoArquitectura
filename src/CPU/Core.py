@@ -65,7 +65,7 @@ class Core:
 
             #Sumamos 384 para simular que la memoria es continua y empieza justo después de la sección de datos
             #Además, se divide entre 16 para encontrar el número de bloque correspondiente
-            posMemoria = self.PC + 384 #Esta es la dirección extra en memoria, vista como 1 solo conjunto
+            posMemoria = self.PC #+ 384 #Esta es la dirección extra en memoria, vista como 1 solo conjunto
             numeroBloque = (posMemoria) // 16
 
             #Al número de bloque le sacamos el modulo 4 para saber en qué posición de la caché lo deberíamos de colocar/encontrar
@@ -110,7 +110,7 @@ class Core:
 
                         #print(self.instructionsCache.memory)
                         #Traemos cada uno de los campos que necesitamos desde la memoria principal
-                        self.instructionsCache.memory[(posicionCache * 16) + i] = self.instructionMemory.memory[self.PC + i]
+                        self.instructionsCache.memory[(posicionCache * 16) + i] = self.instructionMemory.memory[self.PC + i -384]
 
 
                     #todo: implementar cache de datos

@@ -36,7 +36,7 @@ class InstructionMemory(SharedComponent):
         block = []
 
         if blockNumber >= 0: #todo: verificar que bloque sea menor que el maximo
-            block = [self.memory[blockNumber * 16 + i] for i in range(0,16)] #obtiene los 16 bytes del bloque
+            block = [self.memory[blockNumber * 16 + i - 384] for i in range(0,16)] #obtiene los 16 bytes del bloque
 
         return block
 

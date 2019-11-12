@@ -17,7 +17,7 @@ class TextProcessor :
 
         for fileName in fileNameList:
             context = Context() #instancia un nuevo contexto
-            context.setInstructionIndex(instruction_counter * 4)
+            context.setInstructionIndex((instruction_counter * 4 ) + 384)
 
             data = open(fileName)
 
