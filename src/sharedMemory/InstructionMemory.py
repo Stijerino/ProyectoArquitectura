@@ -9,7 +9,7 @@ class InstructionMemory(SharedComponent):
 
     def __init__(self):
         for i in range(384,1024):
-            self.memory[i-384] = i
+            self.memory[i-384] = 0
 
     def getBus(self):
 

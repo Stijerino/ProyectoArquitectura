@@ -70,29 +70,29 @@ class InstructionManager:
         multiplicacion = context.getRegister(registroFuente1) * context.getRegister(registroFuente2)
         context.setRegister(registroDestino, multiplicacion)
 
-    def beq(self,instruccionActual,context,PC,direccionEtiqueta):
+    def beq(self,instruccionActual,context,PC):
         '''
         Procesa una instrucción beq
         :param instruccionActual:  op,x1,x2,etiq tal que cambia PC si x1 = x2
         :param context: el contexto del core que contiene los valores en los registros
         :param PC: El valor viejo del PC
-        :param direccionEtiqueta: La direccion a la que debe saltar. Ya debe estar calculada por el llamador
 
         :return El nuevo valor del contador del programa
         '''
 
         registro1 = instruccionActual[1]
         registro2 = instruccionActual[2]
+        offset = instruccionActual[3]
 
         nuevoPC = PC
 
         if context.getRegister(registro1) == context.getRegister(registro2):
-            nuevoPC = PC + direccionEtiqueta * 4
+            nuevoPC = PC + (offset * 4)
 
         return nuevoPC
 
 
-    def bne(self,instruccionActual,context,PC,direccionEtiqueta):
+    def bne(self,instruccionActual,context,PC):
         '''
         Procesa una instrucción bne
         :param instruccionActual: de la forma op,x1,x2,etiq tal que cambia PC si x1 != x2
@@ -105,11 +105,12 @@ class InstructionManager:
 
         registro1 = instruccionActual[1]
         registro2 = instruccionActual[2]
+        offset = instruccionActual[3]
 
         nuevoPC = PC
 
         if context.getRegister(registro1) != context.getRegister(registro2):
-            nuevoPC = PC + direccionEtiqueta * 4
+            nuevoPC = PC + (offset * 4)
 
         return nuevoPC
 
@@ -154,7 +155,49 @@ class InstructionManager:
 
         #todo liberar el bus
 
+    def jal(self,instruccionActual,context,PC):
+        '''
+        Procesa una instrucción jal
+        :param instruccionActual: de la forma op,x1,x2,etiq tal que cambia PC si x1 != x2
+        :param context: el contexto del core que contiene los valores en los registros
+        :param PC: El valor viejo del PC
 
+        :return El nuevo valor del contador del programa
+        '''
+
+        registro = instruccionActual[1]
+        inmediato = instruccionActual[3]
+
+        context.setRegister(registro, PC)
+
+        nuevoPC = PC + inmediato
+
+        return nuevoPC
+
+    def jalr(self,instruccionActual,context,PC):
+        '''
+        Procesa una instrucción jalr
+        :param instruccionActual: de la forma op,x1,x2,etiq tal que cambia PC si x1 != x2
+        :param context: el contexto del core que contiene los valores en los registros
+        :param PC: El valor viejo del PC
+
+        :return El nuevo valor del contador del programa
+        '''
+
+        registro1 = instruccionActual[1]
+        registro2 = instruccionActual[2]
+        inmediato = instruccionActual[3]
+
+        #print("Imprimiendo cosas en JALR")
+        #print("registro 1 = %d, registro 2 = %d, inmdiato = %d" % (registro1, registro2, inmediato))
+
+        context.setRegister(registro1, PC)
+
+        nuevoPC = context.getRegister(registro2) + inmediato
+
+        #print("Nuevo PC = %d" % nuevoPC)
+
+        return nuevoPC
 
     def sw(self, instruccionActual, context,cacheDatosPropia,busDatos,memoriaDatos):
         '''

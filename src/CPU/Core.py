@@ -93,11 +93,8 @@ class Core:
                 #En caso contrario, debemos de solicitar el bus, traer el bloque correspondiente, meterlo a la caché, liberar el bus y seguir como si ahora
                 #sí estuviera en caché
 
-                # pida el bus de instrucciones
-                if self.instructionBusReference.isAvailable():
-
-                    #Obtenermos el bus de instrucciones
-                    self.instructionBusReference.getBus()
+                # Pida el bus de instrucciones y lo obtengo si está disponible
+                if self.instructionBusReference.getBus():
 
                     # sumar 1 al clock (pedir y lock del bus, o solo pedirlo)
                     self.clock += 1
@@ -149,6 +146,11 @@ class Core:
                 # traiga la instrucción
                 self.output.debug("El core " + str(self.ID) + " se encuentra en el ciclo " +  str(self.clock))
 
+        # Imprimir memoria
+
+        print("Este es el resultado de la memoria después de ejecutar el hilillo : " + str(self.context.id))
+
+
 
     #Método que se utiliza para ejecutar cada instrucción individual
     #Tiene el switch grande con las instrucciones
@@ -169,6 +171,7 @@ class Core:
 
         self.IR = instruccionActual[0]
 
+        print("Ejecutando instrucción %d" % self.IR)
 
         #Decodificar la instruccion
         if self.IR == 19:
@@ -186,13 +189,13 @@ class Core:
         if self.IR == 37:
             self.instructionManager.sw(instruccionActual,self.context,self.dataCache,self.dataBusReference,self.dataMemory)
         if self.IR == 99:
-            pass
+            self.PC = self.instructionManager.beq(instruccionActual, self.context, self.PC)
         if self.IR == 100:
-            pass
+            self.PC = self.instructionManager.bne(instruccionActual, self.context, self.PC )
         if self.IR == 111:
-            pass
+            self.PC = self.instructionManager.jal(instruccionActual, self.context, self.PC)
         if self.IR == 103:
-            pass
+            self.PC = self.instructionManager.jalr(instruccionActual, self.context, self.PC)
         if self.IR == 999:
             self.fin = True
             pass
