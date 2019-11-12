@@ -29,7 +29,7 @@ class Procesor:
 
     # Indican si los nucleos estan disponibles
     availableCore0 = True
-    availableCore1 = True
+    availableCore1 = False #TODO MUY IMPORTANTE: Cambiar esto hasta que ya se quieran probar los hilillos sincronizados
 
     dataBus = 0
     instructionBus = 0
