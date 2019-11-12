@@ -182,9 +182,9 @@ class Core:
         if self.IR == 56:
             self.instructionManager.div(instruccionActual, self.context)
         if self.IR == 5:
-            pass
+            self.instructionManager.lw(instruccionActual,self.context,self.dataCache,self.dataBusReference, self.dataMemory)
         if self.IR == 37:
-            pass
+            self.instructionManager.sw(instruccionActual,self.context,self.dataCache,self.dataBusReference,self.dataMemory)
         if self.IR == 99:
             pass
         if self.IR == 100:

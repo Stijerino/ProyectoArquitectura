@@ -3,6 +3,8 @@ Esta clase contiene la logica para cada una de las instrucciones soportadas
 por el procesador RISC-V
 '''
 
+import math
+
 class InstructionManager:
 
     def addi(self,instruccionActual,context):
@@ -110,6 +112,91 @@ class InstructionManager:
             nuevoPC = PC + direccionEtiqueta * 4
 
         return nuevoPC
+
+
+    def lw(self,instruccionActual, context, cacheDatosPropia, busDatos, memoriaDatos):
+        '''
+        Carga en un registro el valor almacenado en una posición de memoria
+        todo Invalidar la cache de datos del otro nucleo
+
+        :param instruccionActual: De la forma x1,x2,n donde M[N + ]
+        :param context: El contexto con los registrosa
+        :param cacheDatosPropia: La referencia a la cache de datos del core actual
+        :param busDatos: Referencia al bus de datos
+        :param memoriaDatos: Referencia a la memoria de datos
+        :return True si logro leer el bloque, de lo contrario False (Cuando no obtiene el bus de datos)
+        '''
+
+        registroDestino = instruccionActual[1]
+        registroFuente = instruccionActual[2]
+        inmediato = instruccionActual[3]
+
+
+        #Calcula el bloque al que pertenece la dirección de memoria
+        direccion = inmediato + context.getRegister(registroFuente)
+        print("dir")
+        print(direccion)
+
+        numeroBloque = int(math.floor(direccion / 4))
+        indicePalabra = int(math.floor(direccion % 4))
+
+
+        #todo Bloquear el bus de datos
+
+        #Verifica si el dato esta en la cache del nucleo "actual"
+        if not cacheDatosPropia.contieneBloque(numeroBloque):
+            #Si el dato no esta en la cache entonces trae el bloque a cache
+            cacheDatosPropia.cargarBloque(numeroBloque, memoriaDatos)
+
+        #En este punto el bloque ya esta cargado en la cache:
+        dato = cacheDatosPropia.obtenerDato(numeroBloque,indicePalabra)
+        context.setRegister(registroDestino,dato)
+
+        #todo liberar el bus
+
+
+
+    def sw(self, instruccionActual, context,cacheDatosPropia,busDatos,memoriaDatos):
+        '''
+        Insturccion SW
+        :param instruccionActual: forma x1,x2,n donde M[x2+n] = x1
+        :param context: la referencia al contexto con los registros
+        :param cacheDatosPropia: referencia a la cache de datos del nuecleo "actual"
+        :param busDatos: referencia al bus de datos
+        :param memoriaDatos: referencia a la memoria de datos
+        :return: True si logro escribir, de lo contrario False (Cuando no agarra el bus de datos)
+        '''
+
+        #todo bloquear el bus de datos
+        registroDireccion = instruccionActual[1]
+        registroValor = instruccionActual[2]
+        inmediato = instruccionActual[3]
+
+        palabra = context.getRegister(registroValor)
+        direccion = context.getRegister(registroDireccion) + inmediato
+
+        #Escribe en la memoria de datos
+        memoriaDatos.escribirPalabra(direccion,palabra)
+
+        #todo Invalida la cache del otro nucleo si tiene el bloque
+
+        #Actualiza el dato si se encuentra en la cache actual
+        numeroBloque = int(math.floor(direccion / 4))
+        indicePalabra = int(math.floor(direccion % 4))
+
+        if cacheDatosPropia.contieneBloque(numeroBloque):
+            #Actualiza el dato
+            cacheDatosPropia.escribirPalabra(numeroBloque,indicePalabra,palabra)
+
+        #todo liberar el bus
+
+
+
+
+
+
+
+
 
 
 
