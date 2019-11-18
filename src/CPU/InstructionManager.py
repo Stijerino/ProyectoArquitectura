@@ -118,7 +118,6 @@ class InstructionManager:
     def lw(self,instruccionActual, context, cacheDatosPropia, busDatos, memoriaDatos):
         '''
         Carga en un registro el valor almacenado en una posición de memoria
-        todo Invalidar la cache de datos del otro nucleo
 
         :param instruccionActual: De la forma x1,x2,n donde M[N + ]
         :param context: El contexto con los registrosa
@@ -143,6 +142,7 @@ class InstructionManager:
 
 
         #todo Bloquear el bus de datos
+        busDatos.getBus()
 
         #Verifica si el dato esta en la cache del nucleo "actual"
         if not cacheDatosPropia.contieneBloque(numeroBloque):
@@ -154,6 +154,7 @@ class InstructionManager:
         context.setRegister(registroDestino,dato)
 
         #todo liberar el bus
+        busDatos.releaseBus()
 
     def jal(self,instruccionActual,context,PC):
         '''
@@ -199,7 +200,7 @@ class InstructionManager:
 
         return nuevoPC
 
-    def sw(self, instruccionActual, context,cacheDatosPropia,busDatos,memoriaDatos):
+    def sw(self, instruccionActual, context,cacheDatosPropia,busDatos,memoriaDatos,otraCacheDatos):
         '''
         Insturccion SW
         :param instruccionActual: forma x1,x2,n donde M[x2+n] = x1
@@ -207,10 +208,13 @@ class InstructionManager:
         :param cacheDatosPropia: referencia a la cache de datos del nuecleo "actual"
         :param busDatos: referencia al bus de datos
         :param memoriaDatos: referencia a la memoria de datos
+        :param otraCacheDatos: Referencia a la cache de datos del otro nucleo
         :return: True si logro escribir, de lo contrario False (Cuando no agarra el bus de datos)
         '''
 
         #todo bloquear el bus de datos
+        busDatos.getBus()
+
         registroDireccion = instruccionActual[1]
         registroValor = instruccionActual[2]
         inmediato = instruccionActual[3]
@@ -221,17 +225,20 @@ class InstructionManager:
         #Escribe en la memoria de datos
         memoriaDatos.escribirPalabra(direccion,palabra)
 
-        #todo Invalida la cache del otro nucleo si tiene el bloque
-
-        #Actualiza el dato si se encuentra en la cache actual
         numeroBloque = int(math.floor(direccion / 4))
         indicePalabra = int(math.floor(direccion % 4))
 
+        #todo Invalida la cache del otro nucleo si tiene el bloque
+        #Hace la invalidación cuando tiene el bus
+        otraCacheDatos.invalidarBloque(numeroBloque)
+
+        #Actualiza el dato si se encuentra en la cache actual
         if cacheDatosPropia.contieneBloque(numeroBloque):
             #Actualiza el dato
             cacheDatosPropia.escribirPalabra(numeroBloque,indicePalabra,palabra)
 
         #todo liberar el bus
+        busDatos.releaseBus()
 
 
 

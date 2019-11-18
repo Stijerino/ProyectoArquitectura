@@ -52,6 +52,21 @@ class DataCache(Cache):
 
         print(self.memory)
 
+    def invalidarBloque(self,numeroBloque):
+        '''
+        Invalida el bloque si se encuentra en la cache.
+        Utiliza el algoritmo de Mapeo Directo para encontrar la posición del bloque en la cache. Para invalidarlo
+        comprueba que en esa posición del bloque en verdad se encuentre el bloque con ese número y no otro.
+        :param numeroBloque: El bloque a invalidar
+        '''
+
+        posicion = numeroBloque % self.bloques
+
+        if self.memoryMapping[posicion] == numeroBloque:
+            self.available[posicion] = False
+
+
+
     def escribirPalabra(self,numeroBloque,indicePalabra,palabra):
         '''
         Actualiza el valor de  una palabra que se encuentra en un bloque valido

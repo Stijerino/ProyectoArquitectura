@@ -29,7 +29,7 @@ class Procesor:
 
     # Indican si los nucleos estan disponibles
     availableCore0 = True
-    availableCore1 = False #TODO MUY IMPORTANTE: Cambiar esto hasta que ya se quieran probar los hilillos sincronizados
+    availableCore1 = True #TODO MUY IMPORTANTE: Cambiar esto hasta que ya se quieran probar los hilillos sincronizados
 
     dataBus = 0
     instructionBus = 0
@@ -66,12 +66,18 @@ class Procesor:
         self.outputPrinter = OutputPrinter("salida.txt")
         self.barrera = threading.Semaphore()
 
-        #todo Inicializar caches
-
         self.core0 = Core(0,self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory, self.outputPrinter)
         self.core1 = Core(1,self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory, self.outputPrinter)
 
+        #Obtiene las referencias a la cache de datos de cada nucleo, con el fin de pasarlas al nucleo opuesto
+        #y asi poder establecer un medio de comunicación para la invalidación de caches
 
+        cache0 = self.core0.getDataCache()
+        cache1 = self.core1.getDataCache()
+
+        #Habilita la comunicación de cada nucleo con la cache de datos del otro nucleo
+        self.core0.setOtraCache(cache1)
+        self.core1.setOtraCache(cache0)
 
         hilos = []
 

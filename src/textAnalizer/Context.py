@@ -30,11 +30,18 @@ class Context:
         self.registers[register] = value
 
     def printContext(self):
-        print("-----------------------------------------------------------------ID: " + str(self.id))
-        print("Data Index : %d" % (self.dataIndex))
-        print("Instruction Index : %d" % (self.instructionIndex));
+
+
         for r in range(len(self.registers)):
             print("En el registro %d encontramos el valor %d" % ( r, self.registers[r]))
+
+
+        print("-----------------------------------------------------------------ID: " + str(self.id))
+        print("Data Index : %d" % (self.dataIndex))
+        print("Instruction Index : %d" % (self.instructionIndex))
+
+
+
 
         print("Ejecutado por el core: " + str(self.core))
 

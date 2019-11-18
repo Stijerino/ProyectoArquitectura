@@ -21,6 +21,7 @@ class Core:
     instructionManager = 0
     fin = False
     output = 0
+    otraCacheDatos = 0
 
     #Inicializamos las referencias de memoria y tambien las caches
     def __init__(self, ID, DataBus, InstructionBus, DataMem, InstructionMem, output):
@@ -33,6 +34,21 @@ class Core:
         self.dataCache = DataCache()
         self.output = output
         self.instructionManager = InstructionManager()
+
+
+    def getDataCache(self):
+        '''
+        :return: Una referencia a la cache de datos, con el objetivo de que el otro nucleo pueda invalidarla
+        '''
+        return self.dataCache
+
+    def setOtraCache(self,cache):
+        '''
+        Obtiene la referencia a la cache del otro nucleo, con el objetivo de poder invalidarla
+        cuando se haga un sw.
+        :param cache: Referencia, no copia, de la cache de datos de un nucleo que no sea el actual
+        '''
+        self.otraCacheDatos = cache
 
 
     def startContext(self,context):
@@ -144,8 +160,8 @@ class Core:
                 # dentro de este método grande, un while "lo que devuelve la instruccion" no sea falso/verdadero, depende de lo que queramos poner
 
                 # traiga la instrucción
-                self.output.debug("El core " + str(self.ID) + " se encuentra en el ciclo " +  str(self.clock))
-
+                #self.output.debug("El core " + str(self.ID) + " se encuentra en el ciclo " +  str(self.clock))
+                pass
         # Imprimir memoria
 
         print("Este es el resultado de la memoria después de ejecutar el hilillo : " + str(self.context.id))
@@ -187,7 +203,8 @@ class Core:
         if self.IR == 5:
             self.instructionManager.lw(instruccionActual,self.context,self.dataCache,self.dataBusReference, self.dataMemory)
         if self.IR == 37:
-            self.instructionManager.sw(instruccionActual,self.context,self.dataCache,self.dataBusReference,self.dataMemory)
+            self.instructionManager.sw(instruccionActual,self.context,self.dataCache,self.dataBusReference,self.dataMemory,
+                                       self.otraCacheDatos)
         if self.IR == 99:
             self.PC = self.instructionManager.beq(instruccionActual, self.context, self.PC)
         if self.IR == 100:
