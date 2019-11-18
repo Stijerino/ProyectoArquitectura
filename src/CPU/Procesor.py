@@ -1,7 +1,6 @@
 from src.sharedMemory.DataMemory import *
 from src.sharedMemory.InstructionMemory import *
 from src.CPU.Core import *
-from src.textAnalizer.Context import *
 from src.textAnalizer.TextProcessor import *
 from src.buses.InstructionBus import *
 from src.buses.DataBus import  *
@@ -29,7 +28,7 @@ class Procesor:
 
     # Indican si los nucleos estan disponibles
     availableCore0 = True
-    availableCore1 = False #TODO MUY IMPORTANTE: Cambiar esto hasta que ya se quieran probar los hilillos sincronizados
+    availableCore1 =  True  #False #TODO MUY IMPORTANTE: Cambiar esto hasta que ya se quieran probar los hilillos sincronizados
 
     dataBus = 0
     instructionBus = 0
@@ -67,16 +66,20 @@ class Procesor:
         self.barrera = threading.Semaphore()
 
         #todo Inicializar caches
+        #done
 
-        self.core0 = Core(0,self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory, self.outputPrinter)
-        self.core1 = Core(1,self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory, self.outputPrinter)
+        # Inicializar los semáforos
+        semaforo0 = threading.Semaphore()
+        semaforo1 = threading.Semaphore()
 
-
+        self.core0 = Core(0,self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory, self.outputPrinter, semaforo0, semaforo1)
+        self.core1 = Core(1,self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory, self.outputPrinter, semaforo0, semaforo1)
 
         hilos = []
 
         #Agarra los contextos y los asigna a los respectivos hilillos
         lastContextIndex = 0
+
 
 
 
@@ -90,12 +93,14 @@ class Procesor:
                 if(lastContextIndex < self.totalHilillos):
 
                     self.contextList[lastContextIndex].setCore(0)
+                    #Se deben de enviar los semáforos a cada hilo
                     hilo0 = threading.Thread(target=self.assignThread,args=(self.core0,self.contextList[lastContextIndex]))
+                    hilo0.setName("0")
                     lastContextIndex += 1
                     hilos.append(hilo0)
+               #     hilo0.start()
 
-
-                #availableCore0 = True
+                availableCore0 = True
 
             if self.availableCore1 == True:
                 self.availableCore1 = False
@@ -104,15 +109,15 @@ class Procesor:
                 if (lastContextIndex < self.totalHilillos):
                     self.contextList[lastContextIndex].setCore(1)
 
+                    # Se deben de enviar los semáforos a cada hilo
                     hilo1 = threading.Thread(target=self.assignThread2,args=(self.core1, self.contextList[lastContextIndex]))
-                    hilos.append(hilo1)
-
-
-
+                    hilo1.setName("1")
                     lastContextIndex += 1
+                    hilos.append(hilo1)
+              #      hilo1.start()
 
 
-                #availableCore1 = True
+                availableCore1 = True
 
 
             for h in hilos:
@@ -120,8 +125,13 @@ class Procesor:
             hilos = []
 
         #No imprime los resultados hasta que todos los hilos hayan terminado
-        for i in range(0,self.totalHilillos+1):
+        for i in range(0,self.totalHilillos):
             self.barrera.acquire()
+
+        if (threading.current_thread().name == "0"):
+            self.printResults()
+
+
 
 
 

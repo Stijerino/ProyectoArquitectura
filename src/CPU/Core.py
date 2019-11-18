@@ -21,9 +21,11 @@ class Core:
     instructionManager = 0
     fin = False
     output = 0
+    semaforo0 = 0
+    semaforo1 = 0
 
     #Inicializamos las referencias de memoria y tambien las caches
-    def __init__(self, ID, DataBus, InstructionBus, DataMem, InstructionMem, output):
+    def __init__(self, ID, DataBus, InstructionBus, DataMem, InstructionMem, output, semaforo0, semaforo1):
         self.ID = ID
         self.dataBusReference = DataBus
         self.instructionBusReference = InstructionBus
@@ -32,7 +34,10 @@ class Core:
         self.instructionsCache = InstructionCache()
         self.dataCache = DataCache()
         self.output = output
-        self.instructionManager = InstructionManager()
+        self.instructionManager = InstructionManager(semaforo0, semaforo1)
+        self.semaforo0 = semaforo0
+        self.semaforo1 = semaforo1
+
 
 
     def startContext(self,context):
@@ -97,7 +102,7 @@ class Core:
                 if self.instructionBusReference.getBus():
 
                     # sumar 1 al clock (pedir y lock del bus, o solo pedirlo)
-                    self.clock += 1
+                    #self.clock += 1
 
                     #print("--Debug:")
                     #print("Posicion cache: " + str(posicionCache))
@@ -112,6 +117,13 @@ class Core:
                         #Traemos cada uno de los campos que necesitamos desde la memoria principal
                         self.instructionsCache.memory[(posicionCache * 16) + i] = self.instructionMemory.memory[self.PC + i -384]
 
+                    #Subir los datos tomará 10 ciclos
+
+                    for i in range (10):
+                        self.esperarHilo()
+
+                    # Libera el bus de instrucciones
+                    self.instructionBusReference.releaseBus()
 
                     #todo: implementar cache de datos
                     #Al final colocamos el numero de bloque en el mapeo y lo seteamos a disponible
@@ -122,7 +134,7 @@ class Core:
                     #print(self.instructionsCache.memory)
 
                     #Sumar los clocks necesarios
-                    self.clock += 10
+                    #self.clock += 10
 
                     #Para este punto, ya tenemos el bloque subido a caché, ahora solo falta hacer que se ejecuten
 
@@ -131,26 +143,34 @@ class Core:
 
                     self.ejecutarInstruccion(palabraBloque, posicionCache, self.instructionsCache.memory[posicionCache*16 : posicionCache*16 + 4])
 
-                    #Libera el bus de instrucciones
-                    self.instructionBusReference.releaseBus()
+
 
                 else:
                     #Esperar un ciclo y volver a solicitar el bus de nuevo
-                    self.output.log("El hilo " + str(self.ID) + " no ha podido obtener el bus de instrucciones.")
-                    pass
+                    #self.output.log("El hilo " + str(self.ID) + " no ha podido obtener el bus de instrucciones.")
+                    self.esperarHilo()
+
 
                 #este proceso de buscar instruccion, traerla a cache y luego ejecutarla debería de hacer siempre y cuando no tengamos
                 # la instruccion 999, así que en ejecutar instruccion, al final debería de haber una forma de saber cuando salirse, y
                 # dentro de este método grande, un while "lo que devuelve la instruccion" no sea falso/verdadero, depende de lo que queramos poner
 
                 # traiga la instrucción
-                self.output.debug("El core " + str(self.ID) + " se encuentra en el ciclo " +  str(self.clock))
+                #self.output.debug("El core " + str(self.ID) + " se encuentra en el ciclo " +  str(self.clock))
 
         # Imprimir memoria
 
-        print("Este es el resultado de la memoria después de ejecutar el hilillo : " + str(self.context.id))
+        print("Este es el resultado de la memoria después de que el core %s ejecutara el hilillo : %d" % (threading.current_thread().name, self.context.id))
 
 
+    def esperarHilo(self):
+        #print("Mi id es: %s" %  threading.current_thread().name)
+        if threading.current_thread().name == "1":
+            self.semaforo0.release()
+            self.semaforo1.acquire()
+        else:
+            self.semaforo1.release()
+            self.semaforo0.acquire()
 
     #Método que se utiliza para ejecutar cada instrucción individual
     #Tiene el switch grande con las instrucciones
@@ -171,7 +191,7 @@ class Core:
 
         self.IR = instruccionActual[0]
 
-        print("Ejecutando instrucción %d" % self.IR)
+        print("El core %s está ejecutando la instrucción %d del hilillo %d" % (threading.current_thread().name,  self.IR, self.context.id))
 
         #Decodificar la instruccion
         if self.IR == 19:
@@ -198,5 +218,6 @@ class Core:
             self.PC = self.instructionManager.jalr(instruccionActual, self.context, self.PC)
         if self.IR == 999:
             self.fin = True
-            pass
+
+        self.esperarHilo()
 

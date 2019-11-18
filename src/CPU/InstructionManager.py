@@ -5,7 +5,17 @@ por el procesador RISC-V
 
 import math
 
+from src.CPU.Core import *
+import threading
+
 class InstructionManager:
+
+    semaforo0 = 0
+    semaforo1 = 0
+
+    def __init__(self,semaforo0, semaforo1):
+        self.semaforo0 = semaforo0
+        self.semaforo1 = semaforo1
 
     def addi(self,instruccionActual,context):
         '''
@@ -149,6 +159,9 @@ class InstructionManager:
             #Si el dato no esta en la cache entonces trae el bloque a cache
             cacheDatosPropia.cargarBloque(numeroBloque, memoriaDatos)
 
+            for i in range (20):
+                self.esperarHilo()
+
         #En este punto el bloque ya esta cargado en la cache:
         dato = cacheDatosPropia.obtenerDato(numeroBloque,indicePalabra)
         context.setRegister(registroDestino,dato)
@@ -221,6 +234,9 @@ class InstructionManager:
         #Escribe en la memoria de datos
         memoriaDatos.escribirPalabra(direccion,palabra)
 
+        for i in range (5):
+            self.esperarHilo()
+
         #todo Invalida la cache del otro nucleo si tiene el bloque
 
         #Actualiza el dato si se encuentra en la cache actual
@@ -233,6 +249,14 @@ class InstructionManager:
 
         #todo liberar el bus
 
+
+    def esperarHilo(self):
+        if threading.current_thread().name == "1":
+            self.semaforo0.release()
+            self.semaforo1.acquire()
+        else:
+            self.semaforo1.release()
+            self.semaforo0.acquire()
 
 
 
