@@ -29,7 +29,7 @@ class Procesor:
 
     # Indican si los nucleos estan disponibles
     availableCore0 = True
-    availableCore1 =  True  #False #TODO MUY IMPORTANTE: Cambiar esto hasta que ya se quieran probar los hilillos sincronizados
+    availableCore1 =  True  #TODO MUY IMPORTANTE: Cambiar esto hasta que ya se quieran probar los hilillos sincronizados
 
     dataBus = 0
     instructionBus = 0
@@ -107,9 +107,10 @@ class Procesor:
                     hilo0.setName("0")
                     lastContextIndex += 1
                     hilos.append(hilo0)
-               #     hilo0.start()
+                else:  ##En caso de que no hayan más hilillos pero igual se necesite simular el clock
+                    self.esperarHilo(semaforo0, semaforo1)
 
-                availableCore0 = True
+                self.availableCore0 = True
 
             if self.availableCore1 == True:
                 self.availableCore1 = False
@@ -123,10 +124,11 @@ class Procesor:
                     hilo1.setName("1")
                     lastContextIndex += 1
                     hilos.append(hilo1)
-              #      hilo1.start()
+                else: ##En caso de que no hayan más hilillos pero igual se necesite simular el clock
+                    self.esperarHilo(semaforo0, semaforo1)
 
 
-                availableCore1 = True
+                self.availableCore1 = True
 
 
             for h in hilos:
@@ -139,7 +141,6 @@ class Procesor:
 
         if (threading.current_thread().name == "0"):
             self.printResults()
-
 
 
 
@@ -189,3 +190,12 @@ class Procesor:
         self.core1.printDataCache()
 
         print("--Total de contextos: " + str(len(self.contextList)))
+
+    def esperarHilo(self, semaforo0, semaforo1):
+        if threading.current_thread().name == "1":
+            semaforo0.release()
+            semaforo1.acquire()
+        else:
+            semaforo1.release()
+            semaforo0.acquire()
+
