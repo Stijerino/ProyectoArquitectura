@@ -4,6 +4,7 @@ class Context:
     registers = [0 for i in range(0, 32)]  # array de enteros, por el momento hay 32 registros
     core = -1
     id = -1
+    filename = ""
 
     def __init__(self):
         self.dataIndex = 0  # entero
@@ -11,6 +12,10 @@ class Context:
         self.registers = [0 for i in range(0, 32)]  # array de enteros, por el momento hay 32 registros
         self.core = -1
         self.id = -1
+        self.filename = ""
+
+    def setFilename(self, filename):
+        self.filename = filename
 
 
     def setCore(self,core):
@@ -31,6 +36,7 @@ class Context:
 
     def printContext(self):
         print("-----------------------------------------------------------------ID: " + str(self.id))
+        print("Nombre del archivo: " + self.filename)
         print("Data Index : %d" % (self.dataIndex))
         print("Instruction Index : %d" % (self.instructionIndex));
         for r in range(len(self.registers)):

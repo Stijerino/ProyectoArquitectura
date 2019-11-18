@@ -23,6 +23,8 @@ class Core:
     output = 0
     semaforo0 = 0
     semaforo1 = 0
+    otraCacheDatos = 0
+
 
     #Inicializamos las referencias de memoria y tambien las caches
     def __init__(self, ID, DataBus, InstructionBus, DataMem, InstructionMem, output, semaforo0, semaforo1):
@@ -38,6 +40,28 @@ class Core:
         self.semaforo0 = semaforo0
         self.semaforo1 = semaforo1
 
+    def getDataCache(self):
+        '''
+        :return: Una referencia a la cache de datos, con el objetivo de que el otro nucleo pueda invalidarla
+        '''
+        return self.dataCache
+
+    def setOtraCache(self, cache):
+        '''
+        Obtiene la referencia a la cache del otro nucleo, con el objetivo de poder invalidarla
+        cuando se haga un sw.
+        :param cache: Referencia, no copia, de la cache de datos de un nucleo que no sea el actual
+        '''
+        self.otraCacheDatos = cache
+
+    def printDataCache(self):
+        '''
+        Función intermediaria.
+        Imprime el estado de la cache del nucleo actual
+        '''
+
+        print("---Imprimiendo estado de la cache del nucleo " + str(self.ID))
+        self.dataCache.printCache()
 
 
     def startContext(self,context):
@@ -207,7 +231,9 @@ class Core:
         if self.IR == 5:
             self.instructionManager.lw(instruccionActual,self.context,self.dataCache,self.dataBusReference, self.dataMemory)
         if self.IR == 37:
-            self.instructionManager.sw(instruccionActual,self.context,self.dataCache,self.dataBusReference,self.dataMemory)
+            self.instructionManager.sw(instruccionActual, self.context, self.dataCache, self.dataBusReference,
+                                       self.dataMemory,
+                                       self.otraCacheDatos)
         if self.IR == 99:
             self.PC = self.instructionManager.beq(instruccionActual, self.context, self.PC)
         if self.IR == 100:

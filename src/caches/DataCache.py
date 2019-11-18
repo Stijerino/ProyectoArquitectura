@@ -13,6 +13,35 @@ class DataCache(Cache):
         self.available = [False] * 4 #Acá encontramos si bloque está o no inválido
         self.bloques = 4 #La cantidad de bloques que tiene la caches
 
+    def invalidarBloque(self, numeroBloque):
+        '''
+        Invalida el bloque si se encuentra en la cache.
+        Utiliza el algoritmo de Mapeo Directo para encontrar la posición del bloque en la cache. Para invalidarlo
+        comprueba que en esa posición del bloque en verdad se encuentre el bloque con ese número y no otro.
+        :param numeroBloque: El bloque a invalidar
+        '''
+
+        posicion = numeroBloque % self.bloques
+
+        if self.memoryMapping[posicion] == numeroBloque:
+            self.available[posicion] = False
+
+    def printCache(self):
+        '''
+        Imprime el estado de la cache de datos.
+        Indica los datos almacenados en la cache y el estado del bloque
+        '''
+
+        for bloque in range(0, self.bloques):
+            print("Posición " + str(bloque) + "; Etiqueta Bloque " + str(self.memoryMapping[bloque]) + "; Datos: " +
+                  str(self.memory[bloque * 4:bloque * 4 + 4]), end='')
+
+            if self.available[bloque] == True:
+                print(" Estado: Válido")
+            else:
+                print(" Estado: Inválido")
+
+
     def contieneBloque(self,numeroBloque):
         '''
         Indica si el bloque se encuentra o no en la cache de datos.

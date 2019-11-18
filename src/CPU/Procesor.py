@@ -8,6 +8,7 @@ from src.textAnalizer.OutputPrinter import *
 
 import glob
 import threading
+import sys
 
 
 class Procesor:
@@ -65,8 +66,6 @@ class Procesor:
         self.outputPrinter = OutputPrinter("salida.txt")
         self.barrera = threading.Semaphore()
 
-        #todo Inicializar caches
-        #done
 
         # Inicializar los semáforos
         semaforo0 = threading.Semaphore()
@@ -74,6 +73,16 @@ class Procesor:
 
         self.core0 = Core(0,self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory, self.outputPrinter, semaforo0, semaforo1)
         self.core1 = Core(1,self.dataBus,self.instructionBus, self.dataMemory, self.instructionsMemory, self.outputPrinter, semaforo0, semaforo1)
+
+        # Obtiene las referencias a la cache de datos de cada nucleo, con el fin de pasarlas al nucleo opuesto
+        # y asi poder establecer un medio de comunicación para la invalidación de caches
+
+        cache0 = self.core0.getDataCache()
+        cache1 = self.core1.getDataCache()
+
+        # Habilita la comunicación de cada nucleo con la cache de datos del otro nucleo
+        self.core0.setOtraCache(cache1)
+        self.core1.setOtraCache(cache0)
 
         hilos = []
 
@@ -167,8 +176,16 @@ class Procesor:
         '''
         self.dataMemory.printMemory()
         self.instructionsMemory.printMemory()
-        print("Lista de contextos:")
+
+
+        print("--Total de contextos: " + str(len(self.contextList)))
+
         for context in self.contextList:
             context.printContext()
+
+
+        #Imprime el estado de las caches
+        self.core0.printDataCache()
+        self.core1.printDataCache()
 
         print("--Total de contextos: " + str(len(self.contextList)))
