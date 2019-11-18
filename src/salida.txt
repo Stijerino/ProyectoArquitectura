@@ -4,62 +4,6 @@ El core 0 ha terminado el hilillo 0
 El core 0 ha empezado el hilillo 2
 El core 1 ha terminado el hilillo 1
 El core 1 ha empezado el hilillo 3
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
-El hilo 1 no ha podido obtener el bus de instrucciones.
 El core 0 ha terminado el hilillo 2
 El core 0 ha empezado el hilillo 4
 El core 1 ha terminado el hilillo 3

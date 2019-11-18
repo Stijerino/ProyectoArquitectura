@@ -168,3 +168,7 @@ class Procesor:
             context.printContext()
 
         print("--Total de contextos: " + str(len(self.contextList)))
+
+        #Imprime el estado de las caches
+        self.core0.printDataCache()
+        self.core1.printDataCache()

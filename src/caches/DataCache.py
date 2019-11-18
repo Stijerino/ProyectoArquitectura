@@ -111,5 +111,18 @@ class DataCache(Cache):
 
         return palabra
 
+    def printCache(self):
+        '''
+        Imprime el estado de la cache de datos.
+        Indica los datos almacenados en la cache y el estado del bloque
+        '''
 
+        for bloque in range(0,self.bloques):
+            print("Posición " + str(bloque)+ "; Etiqueta Bloque " + str(self.memoryMapping[bloque]) + "; Datos: "+
+                  str(self.memory[bloque * 4:bloque * 4 +4]),end='')
+
+            if self.available[bloque] == True:
+                print(" Estado: Válido")
+            else:
+                print(" Estado: Inválido")
 

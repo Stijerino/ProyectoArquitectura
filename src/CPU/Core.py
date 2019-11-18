@@ -35,6 +35,14 @@ class Core:
         self.output = output
         self.instructionManager = InstructionManager()
 
+    def printDataCache(self):
+        '''
+        Función intermediaria.
+        Imprime el estado de la cache del nucleo actual
+        '''
+        print("---Imprimiendo estado de la cache del nucleo " + str(self.ID))
+        self.dataCache.printCache()
+
 
     def getDataCache(self):
         '''
